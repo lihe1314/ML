@@ -81,8 +81,6 @@ end
 
 X = [ones(m, 1) X];
 
-
-
 %h(x)
 
 a2 = [];
@@ -146,11 +144,9 @@ ab2 = [];
 ab3 = [];
 
 
-% Delta1 = zeros(hidden_layer_size + 1,size(X, 2)-1);
-% Delta2 = zeros(num_labels,hidden_layer_size);
+Delta1 = zeros(hidden_layer_size,size(X, 2)-1);
+Delta2 = zeros(num_labels,hidden_layer_size);
 
-Delta1 = zeros(size(Theta1));
-Delta2 = zeros(size(Theta2));
 
 % delta3 = (a3 - y_')';
 % delta2 = ((Theta2(:,2:end)' * delta3)' .* sigmoidGradient(X * Theta1'))';
@@ -163,19 +159,15 @@ Delta2 = zeros(size(Theta2));
 
 for i = 1:m
 
-    ab1 = X(i,:)';
+    ab1 = X(i,2:end)';
 
-    size(ab1);
-
-    z2 = Theta1 * ab1;
+    z2 = Theta1(:,2:end) * ab1;
     
     size(z2);
 
     ab2 = sigmoid(z2);
 
-    ab2 = [1 ; ab2];
-
-    z3 = Theta2 * ab2;
+    z3 = Theta2(:,2:end) * ab2;
 
     size(z3);
 
@@ -187,26 +179,29 @@ for i = 1:m
 
     size(delta3);
 
-    delta2 = Theta2' * delta3 .* ab2 .* (1 - ab2);
+    delta2 = Theta2(:,2:end)' * delta3 .* ab2 .* (1 - ab2);
 
     size(delta2);
-    size(Theta1');
 
-    delta1 = Theta1' * delta2(2:end) .* ab1 .* (1 - ab1);
+    delta1 = Theta1(:,2:end)' * delta2 .* ab1 .* (1 - ab1);
 
     size(delta1);
 
     Delta2 = Delta2 + delta3 * ab2';
-    Delta1 = Delta1 + delta2(2:end) * ab1';
+    Delta1 = Delta1 + delta2 * ab1';
     
 end
 
-Theta1_grad = Delta1 / m;
-Theta2_grad = Delta2 / m;
+Theta1_grad = [ones(size(Delta1,1), 1) Delta1];
+Theta2_grad = [ones(size(Delta2,1), 1) Delta2];
+
+Theta1_grad = Theta1_grad / m;
+Theta2_grad = Theta2_grad / m;
 
 % =========================================================================
 
 % Unroll gradients
 grad = [Theta1_grad(:) ; Theta2_grad(:)];
+
 
 end
