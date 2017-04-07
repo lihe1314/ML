@@ -165,11 +165,7 @@ for i = 1:m
 
     ab1 = X(i,:)';
 
-    size(ab1);
-
     z2 = Theta1 * ab1;
-    
-    size(z2);
 
     ab2 = sigmoid(z2);
 
@@ -177,24 +173,13 @@ for i = 1:m
 
     z3 = Theta2 * ab2;
 
-    size(z3);
-
     ab3 = sigmoid(z3);
 
-    size(ab3);
-
     delta3 = ab3 - y_(:,i);
-
-    size(delta3);
-
+    
     delta2 = Theta2' * delta3 .* ab2 .* (1 - ab2);
 
-    size(delta2);
-    size(Theta1');
-
     delta1 = Theta1' * delta2(2:end) .* ab1 .* (1 - ab1);
-
-    size(delta1);
 
     Delta2 = Delta2 + delta3 * ab2';
     Delta1 = Delta1 + delta2(2:end) * ab1';
@@ -203,6 +188,12 @@ end
 
 Theta1_grad = Delta1 / m;
 Theta2_grad = Delta2 / m;
+
+
+%leave the first column untouched, 
+%for all columns from 2nd to the L, add lamda/m * Theta2
+Theta2_grad(:,2:end) = Theta2_grad(:,2:end) + lambda * Theta2(:,2:end) / m;
+Theta1_grad(:,2:end) = Theta1_grad(:,2:end) + lambda * Theta1(:,2:end) / m;
 
 % =========================================================================
 
