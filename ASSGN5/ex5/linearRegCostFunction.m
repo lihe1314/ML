@@ -12,7 +12,7 @@ m = length(y); % number of training examples
 J = 0;
 grad = zeros(size(theta));
 
-n = length(theta)
+n = length(theta);
 
 % ====================== YOUR CODE HERE ======================
 % Instructions: Compute the cost and gradient of regularized linear 
@@ -21,14 +21,18 @@ n = length(theta)
 %               You should set J to the cost and grad to the gradient.
 %
 
+
 %this is previous exercise
 J  = sum((X * theta - y) .^ 2) / (2 * m) + sum(theta(2:end,:).^2) * lambda / (2 * m);
 
+size((X'(2:end,:) * (X * theta - y) / m + lambda * theta(2:end,:) / m)');
 
+grad = [X'(1,:) * (X * theta  - y) / m, (X'(2:end,:) * (X * theta - y) / m + lambda * theta(2:end,:) / m)' ];
 
+% grad = sum(X' * (X * theta - y)) / m + lambda * theta_c / m
 
 % =========================================================================
 
-grad = grad(:);
+% grad = grad(:);
 
 end
